@@ -1,6 +1,4 @@
 const { log } = require("console");
-const fs = require("fs");
-const path = require("path");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const PrismaExeption = require("../exeptions/prismaExeption");
