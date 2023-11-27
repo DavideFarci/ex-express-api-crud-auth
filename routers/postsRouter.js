@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, checkSchema } = require("express-validator");
 const postController = require("../controllers/postController");
 const postUpdate = require("../validations/postUpdate");
+const schermaValidator = require("../middlwares/schemaValidator");
 
 // INDEX
 router.get("/", postController.index);
@@ -21,7 +22,12 @@ router.post(
 );
 
 // UPDATE
-router.put("/:slug", checkSchema(postUpdate), postController.update);
+router.put(
+  "/:slug",
+  checkSchema(postUpdate),
+  schermaValidator.checkValidity,
+  postController.update
+);
 
 // DELETE
 router.delete("/:slug", postController.destroy);

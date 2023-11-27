@@ -1,3 +1,6 @@
+/**
+ *  @type {import("express-validator").Schema}
+ */
 module.exports = {
   title: {
     in: ["body"],

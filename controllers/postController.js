@@ -120,15 +120,6 @@ async function store(req, res) {
 
 // UPDATE (SLUG)
 async function update(req, res) {
-  // Validations
-  const validation = validationResult(req);
-  if (!validation.isEmpty()) {
-    return res.status(400).json({
-      message: "Controllare i campi inseriti",
-      errors: validation.array(),
-    });
-  }
-
   // Request
   const { slug } = req.params;
   const postToUpdate = req.body;
