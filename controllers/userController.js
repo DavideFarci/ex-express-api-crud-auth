@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { matchedData } = require("express-validator");
 const bcrypt = require("bcrypt");
+const jsonwebToken = require("jsonwebtoken");
 
 // REGISTER
 async function register(req, res) {
@@ -21,7 +22,11 @@ async function register(req, res) {
     },
   });
 
-  res.json({ newUser });
+  const token = jsonwebToken.sign(newUser, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  res.json({ newUser, token });
 }
 
 // LOGIN
