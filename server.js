@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const postsRouter = require("./routers/postsRouter");
 const tagsRouter = require("./routers/tagsRouter");
+const usersRouter = require("./routers/usersRouter");
 const categoryRouter = require("./routers/categoryRouter");
 const routeNotFoundMiddlware = require("./middlwares/routeNotFound");
 
@@ -15,6 +16,8 @@ app.use("/posts", postsRouter);
 app.use("/tags", tagsRouter);
 // Rotte per l'entità category
 app.use("/categories", categoryRouter);
+// Rotte per gli user (non specifichiamo un percorso per rendere più pulito l'url)
+app.use("", usersRouter);
 
 // Errore 404 - Pagina non trovata
 app.use(routeNotFoundMiddlware);
