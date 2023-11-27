@@ -167,6 +167,29 @@ async function update(req, res) {
 
 // DESTROY
 async function destroy(req, res) {
+  // Recupero il post da eliminare
+  const post = await prisma.post.findUnique({
+    where: {
+      slug: req.params.slug,
+    },
+  });
+
+  // Disconnetto le relazioni con le tabelle category e tags
+  await prisma.post.update({
+    where: {
+      slug: req.params.slug,
+    },
+    data: {
+      category: {
+        disconnect: true,
+      },
+      tags: {
+        disconnect: post.tags.map((tagId) => ({ id: tagId })),
+      },
+    },
+  });
+
+  // Elimino definitivamente il post
   const { slug } = req.params;
   const postToDestroy = await prisma.post.delete({
     where: {
