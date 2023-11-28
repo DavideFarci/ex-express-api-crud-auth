@@ -11,17 +11,17 @@ datasource db {
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(50)
-  slug       String   @unique @db.VarChar(50)
-  image      String?  @db.Text
-  content    String   @db.Text
-  published  Boolean  @default(false)
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id])
+  id         Int       @id @default(autoincrement())
+  title      String    @db.VarChar(50)
+  slug       String    @unique @db.VarChar(50)
+  image      String?   @db.Text
+  content    String    @db.Text
+  published  Boolean   @default(false)
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
   tags       Tag[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
 }
 
 // Relazione one-to-many

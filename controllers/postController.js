@@ -93,13 +93,11 @@ async function store(req, res) {
       content: postToCreate.content,
       published: postToCreate.published,
       tags: {
-        connect: postToCreate.tags.map((tagId) => ({ id: tagId })),
+        connect: postToCreate.tags
+          ? postToCreate.tags.map((tagId) => ({ id: tagId }))
+          : [],
       },
-      category: {
-        connect: {
-          id: postToCreate.categoryId,
-        },
-      },
+      categoryId: postToCreate?.categoryId,
     },
     include: {
       category: {

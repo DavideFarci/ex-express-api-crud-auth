@@ -2,6 +2,11 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const { slugControl } = require("../Utilities/functions");
 
+async function index(req, res) {
+  const categories = await prisma.category.findMany();
+  return res.json(categories);
+}
+
 async function store(req, res) {
   const data = req.body;
 
@@ -17,5 +22,6 @@ async function store(req, res) {
 }
 
 module.exports = {
+  index,
   store,
 };
