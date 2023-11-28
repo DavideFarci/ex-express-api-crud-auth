@@ -46,7 +46,11 @@ async function index(req, res, next) {
     next(new PrismaExeption("Qualcosa è andato storto, riprova", 500));
   }
 
-  return res.json(data, total, page, perPage);
+  // return res.json(data, total, page, perPage);
+  return res.json({
+    message: "Lista dei post",
+    data: data,
+  });
 }
 
 // SHOW (SLUG)

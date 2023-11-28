@@ -1,6 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
+const corsOptions = {
+  origin: "http://localhost:5173",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
 const postsRouter = require("./routers/postsRouter");
 const tagsRouter = require("./routers/tagsRouter");
 const usersRouter = require("./routers/usersRouter");
@@ -8,6 +14,7 @@ const categoryRouter = require("./routers/categoryRouter");
 const routeNotFoundMiddlware = require("./middlwares/routeNotFound");
 
 const app = express();
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Rotte per l'entità post

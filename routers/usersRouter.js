@@ -4,6 +4,7 @@ const userController = require("../controllers/userController");
 const { checkSchema } = require("express-validator");
 const userRegister = require("../validations/userRegister");
 const { checkValidity } = require("../middlwares/schemaValidator");
+const userLogin = require("../validations/userLogin");
 
 router.post(
   "/register",
@@ -14,6 +15,11 @@ router.post(
   userController.register
 );
 
-router.post("/login", userController.login);
+router.post(
+  "/login",
+  checkSchema(userLogin),
+  checkValidity,
+  userController.login
+);
 
 module.exports = router;
