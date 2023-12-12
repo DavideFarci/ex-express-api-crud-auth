@@ -16,6 +16,7 @@ const routeNotFoundMiddlware = require("./middlwares/routeNotFound");
 const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static("public"));
 
 // Rotte per l'entità post
 app.use("/posts", postsRouter);

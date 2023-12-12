@@ -9,7 +9,7 @@ const { validationResult } = require("express-validator");
 async function index(req, res, next) {
   const filters = {};
   const page = req.query.page || 1;
-  const perPage = 5;
+  const perPage = 100;
   const { published, str } = req.query;
   if (str) {
     filters.OR = [
@@ -37,6 +37,7 @@ async function index(req, res, next) {
       },
       tags: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -71,6 +72,7 @@ async function show(req, res) {
 
 // STORE
 async function store(req, res) {
+  log(req);
   const validation = validationResult(req);
   if (!validation.isEmpty()) {
     return res.status(400).json({
@@ -79,6 +81,10 @@ async function store(req, res) {
     });
   }
   const postToCreate = req.body;
+  const file = req.file;
+  if (file) {
+    postToCreate.image = file.filename;
+  }
   const list = await prisma.post.findMany();
   if (!list) {
     next(
@@ -94,10 +100,10 @@ async function store(req, res) {
       published: postToCreate.published,
       tags: {
         connect: postToCreate.tags
-          ? postToCreate.tags.map((tagId) => ({ id: tagId }))
+          ? postToCreate.tags.map((tagId) => ({ id: +tagId }))
           : [],
       },
-      categoryId: postToCreate?.categoryId,
+      categoryId: +postToCreate?.categoryId,
     },
     include: {
       category: {
@@ -124,7 +130,13 @@ async function store(req, res) {
 async function update(req, res) {
   // Request
   const { slug } = req.params;
-  const postToUpdate = req.body;
+  const file = req.file;
+  const postToUpdate = req.validateData;
+
+  if (file) {
+    postToUpdate.image = file.filename;
+  }
+
   const post = await prisma.post.findUnique({
     where: {
       slug: slug,
@@ -145,7 +157,31 @@ async function update(req, res) {
     where: {
       slug: slug,
     },
-    data: postToUpdate,
+    data: {
+      title: postToUpdate.title,
+      slug: slugControl(postToUpdate.title, list),
+      image: postToUpdate.image,
+      content: postToUpdate.content,
+      published: postToUpdate.published,
+      tags: {
+        connect: postToUpdate.tags
+          ? postToUpdate.tags.map((tagId) => ({ id: tagId }))
+          : [],
+      },
+      categoryId: postToUpdate?.categoryId,
+    },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      tags: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
 
   if (!postUpdated) {
@@ -167,6 +203,7 @@ async function destroy(req, res) {
     },
   });
 
+  log(post.tags);
   // Disconnetto le relazioni con le tabelle category e tags
   await prisma.post.update({
     where: {
@@ -177,7 +214,7 @@ async function destroy(req, res) {
         disconnect: true,
       },
       tags: {
-        disconnect: post.tags.map((tagId) => ({ id: tagId })),
+        disconnect: post.tags?.map((tagId) => ({ id: tagId })),
       },
     },
   });
